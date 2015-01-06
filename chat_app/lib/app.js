@@ -1,12 +1,18 @@
-var http = require('http'),
-    static = require('node-static');
+var http, static, chat, file, server;
 
-var file = new static.Server('./public');
+http = require('http');
+static = require('node-static');
+chat = require('./chat_server');
 
-var server = http.createServer(function (req, res) {
+
+file = new static.Server('./public');
+
+server = http.createServer(function (req, res) {
   req.addListener('end', function () {
     file.serve(req, res);
   }).resume();
 });
 
 server.listen(8080);
+
+chat.createChat(server);
