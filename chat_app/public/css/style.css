@@ -23,9 +23,10 @@ body {
   display: block;
   border: 1px solid black;
   padding: 20px;
+  padding-top: 0;
   height: 80%;
   background: white;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .user {
