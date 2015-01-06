@@ -15,4 +15,4 @@ server = http.createServer(function (req, res) {
 
 server.listen(8080);
 
-chat.createChat(server);
+var chatServer = new chat.ChatServer(server);

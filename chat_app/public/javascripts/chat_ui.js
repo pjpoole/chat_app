@@ -20,7 +20,9 @@ ChatUi.prototype.sendMessage = function () {
 };
 
 ChatUi.prototype.addMessage = function (message) {
-  var $li = $('<li>').text(message);
+  var $li = $('<li>');
+  var $nick = $('<strong>').text(message.nick).append(": ");
+  $li.text(message.message).prepend($nick);
 
   $('.chat-room').append($li);
 };
