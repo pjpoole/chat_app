@@ -4,6 +4,7 @@ var App = root.App = (root.App || {});
 var ChatUi = App.ChatUi = function (chat) {
   this.chat = chat;
   this.$input = $('.user-input input');
+  this.$chatRoom = $('.chat-room');
 };
 
 ChatUi.prototype.getMessage = function () {
@@ -20,11 +21,30 @@ ChatUi.prototype.sendMessage = function () {
 };
 
 ChatUi.prototype.addMessage = function (message) {
-  var $li = $('<li>');
-  var $nick = $('<strong>').text(message.nick).append(": ");
+  var $li = $('<li>'),
+      $nick = $('<strong>').text(message.nick).append(": ");
+
   $li.text(message.message).prepend($nick);
 
-  $('.chat-room').append($li);
+  this.$chatRoom.append($li);
+};
+
+ChatUi.prototype.renderError = function (message) {
+  var $li = $('<li>'),
+      $em = $('<em>').append('error: ').append(message.get("message"));
+
+  $li.html($em);
+
+  this.$chatRoom.append($li);
+};
+
+ChatUi.prototype.handleNickSuccess = function (data) {
+  var $li = $('<li>'),
+      $em = $('<em>').append('Nick changed to ').append(data.get("name"));
+
+  $li.html($em);
+
+  this.$chatRoom.append($li);
 };
 
 
@@ -44,6 +64,18 @@ $(function () {
 
   socket.on('message_distribute', function (data) {
     chatUi.addMessage(data);
+  });
+
+  socket.on('server_error', function (data) {
+    chatUi.renderError(data);
+  });
+
+  socket.on('nickname_change_result', function (data) {
+    if (data.get("success")) {
+      chatUi.handleNickSuccess(data);
+    } else {
+      chatUi.renderError(data);
+    }
   });
 
 });
